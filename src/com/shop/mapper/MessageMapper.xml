@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.shop.mapper.MessageMapper">
+	<resultMap id="BaseResultMap" type="com.shop.po.Message">
+		<id column="messageid" property="messageid" jdbcType="INTEGER" />
+		<result column="message" property="message" jdbcType="VARCHAR" />
+		<result column="messagedate" property="messagedate" jdbcType="VARCHAR" />
+		<result column="uid" property="uid" jdbcType="INTEGER" />
+		<association property="user" javaType="com.shop.po.User">
+			<id column="uid" property="uid" jdbcType="INTEGER" />
+			<result column="username" property="username" jdbcType="VARCHAR" />
+			<result column="password" property="password" jdbcType="VARCHAR" />
+			<result column="name" property="name" jdbcType="VARCHAR" />
+			<result column="email" property="email" jdbcType="VARCHAR" />
+			<result column="phone" property="phone" jdbcType="VARCHAR" />
+			<result column="addr" property="addr" jdbcType="VARCHAR" />
+			<result column="state" property="state" jdbcType="INTEGER" />
+			<result column="code" property="code" jdbcType="VARCHAR" />
+		</association>
+	</resultMap>
+	<sql id="Base_Column_List">
+		messageid, message, messagedate, uid
+	</sql>
+	
+	<!-- countAllMessage -->
+	<select id="countAllMessage" parameterType="int" resultType="int">
+		SELECT count(*) FROM Message 
+	</select>
+	 
+	<select id="findAllMessageByPage" parameterType="int"
+		resultMap="BaseResultMap">
+        SELECT Message.*,User.* FROM Message ,User WHERE 
+		Message.uid = User.`uid`  order by Message.messageid desc  limit #{0},#{1}
+	</select>
+	 
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from Message
+		where messageid = #{messageid,jdbcType=INTEGER}
+	</delete>
+	 
+	<insert id="insert" parameterType="com.shop.po.Message"
+		useGeneratedKeys="true" keyProperty="messageid">
+		insert into Message (messageid, message, messagedate, uid)
+		values
+		(#{messageid,jdbcType=INTEGER},
+		#{message,jdbcType=VARCHAR},
+		#{messagedate,jdbcType=VARCHAR},
+		#{uid,jdbcType=INTEGER})
+	</insert>
+	<insert id="insertSelective" parameterType="com.shop.po.Message">
+		insert into Message
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="messageid != null">
+				messageid,
+			</if>
+			<if test="message != null">
+				message,
+			</if>
+			<if test="messagedate != null">
+				messagedate,
+			</if>
+			<if test="uid != null">
+				uid,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="messageid != null">
+				#{messageid,jdbcType=INTEGER},
+			</if>
+			<if test="message != null">
+				#{message,jdbcType=VARCHAR},
+			</if>
+			<if test="messagedate != null">
+				#{messagedate,jdbcType=VARCHAR},
+			</if>
+			<if test="uid != null">
+				#{uid,jdbcType=INTEGER},
+			</if>
+		</trim>
+	</insert>
+	
+</mapper>
